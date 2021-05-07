@@ -173,6 +173,9 @@ namespace cAlgo.Robots
 
         #region Params
 
+        [Parameter(NAME + " " + VERSION, Group = "Identity", DefaultValue = "https://ctrader.guru/product/resource-monitor/")]
+        public string ProductInfo { get; set; }
+
         [Parameter("Seconds To Check", Group = "Monitoring", DefaultValue = 3, MinValue = 1, Step = 1)]
         public int MonitorCheck { get; set; }
 
