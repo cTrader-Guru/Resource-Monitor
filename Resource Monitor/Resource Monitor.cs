@@ -173,7 +173,7 @@ namespace cAlgo.Robots
 
         #region Params
 
-        [Parameter(NAME + " " + VERSION, Group = "Identity", DefaultValue = "https://ctrader.guru/product/resource-monitor/")]
+        [Parameter(NAME + " " + VERSION, Group = "Identity", DefaultValue = "https://www.google.com/search?q=ctrader+guru+resource+monitor")]
         public string ProductInfo { get; set; }
 
         [Parameter("Seconds To Check", Group = "Monitoring", DefaultValue = 3, MinValue = 1, Step = 1)]
@@ -235,7 +235,7 @@ namespace cAlgo.Robots
             if (!AlertCPUSent && CurrentCPU >= CPUTrigger)
             {
 
-                _sendCPUmessage(CurrentCPU);
+                SendCPUmessage(CurrentCPU);
 
             }
             else if (CurrentCPU <= CPUReset)
@@ -264,7 +264,7 @@ namespace cAlgo.Robots
         protected override void OnStop()
         {
 
-            _toWebHook(NAME + " is stopped");
+            ToWebHook(NAME + " is stopped");
 
         }
 
@@ -272,7 +272,7 @@ namespace cAlgo.Robots
 
         #region Private Method
 
-        public void _toWebHook(string message)
+        public void ToWebHook(string message)
         {
 
             if (!WebhookEnabled || !(RunningMode == RunningMode.RealTime || RunningMode == RunningMode.VisualBacktesting))
@@ -282,17 +282,17 @@ namespace cAlgo.Robots
 
             try
             {
-                // --> Mi servono i permessi di sicurezza per il dominio, compreso i redirect
+
                 Uri myuri = new Uri(Webhook);
 
                 string pattern = string.Format("{0}://{1}/.*", myuri.Scheme, myuri.Host);
 
-                // --> Autorizzo tutte le pagine di questo dominio
+
                 Regex urlRegEx = new Regex(pattern);
                 WebPermission p = new WebPermission(NetworkAccess.Connect, urlRegEx);
                 p.Assert();
 
-                // --> Protocollo di sicurezza https://
+
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
 
                 using (WebClient wc = new WebClient())
@@ -311,7 +311,7 @@ namespace cAlgo.Robots
 
         }
 
-        public void _sendCPUmessage(double CPUvalue)
+        public void SendCPUmessage(double CPUvalue)
         {
 
             if (CPUvalue <= 0)
@@ -319,7 +319,7 @@ namespace cAlgo.Robots
 
             string message = string.Format("CPU out of range : {0}% ( {1} / {2} )", CPUvalue, CPUTrigger, CPUReset);
 
-            _toWebHook(message);
+            ToWebHook(message);
 
             AlertCPUSent = true;
 
